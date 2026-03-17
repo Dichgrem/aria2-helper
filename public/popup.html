@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AriaNg Download Manager</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      padding: 15px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .status.enabled {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .status.disabled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    . shortcuts {
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 aria-label="Extension Name">AriaNg Download Manager</h1>
+
+    <div id="captureStatus" class="status">Loading...</div>
+
+    <button id="openAriang" class="btn">Open AriaNg</button>
+    <button id="openSettings" class="btn btn-secondary">Settings</button>
+
+    <div class="shortcuts">
+      Ctrl+Shift+D: Toggle Capture<br>
+      Right-click: Download with Aria2
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

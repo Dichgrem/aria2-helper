@@ -1,0 +1,28 @@
+{
+  "name": "aria2-ng-extension",
+  "version": "1.0.0",
+  "description": "Browser extension that automatically intercepts downloads to aria2 with AriaNg UI",
+  "type": "module",
+  "scripts": {
+    "build": "npm run build:firefox",
+    "build:firefox": "node scripts/build.js firefox",
+    "dev:firefox": "node scripts/build.js firefox --watch",
+    "download:ariang": "node scripts/download-ariang.js",
+    "lint": "biome check src/ public/",
+    "lint:fix": "biome check --write src/ public/"
+  },
+  "keywords": [
+    "aria2",
+    "ariang",
+    "browser-extension",
+    "download-manager",
+    "web-extension"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "archiver": "^7.0.1",
+    "biome": "^0.3.3",
+    "chokidar": "^4.0.1"
+  }
+}

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AriaNg Download Manager - Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      padding: 40px;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .section h2 {
+      color: #667eea;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #555;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+     gap: 10px;
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .textarea-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      min-height: 100px;
+      resize: vertical;
+      font-family: monospace;
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #888;
+      margin-top: 5px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .row {
+      display: flex;
+      gap: 20px;
+    }
+
+    .col {
+      flex: 1;
+    }
+
+    .status {
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .status.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .connection-status {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #ffe8e8;
+      color: #c0392b;
+    }
+
+    .connection-status.connected {
+      background: #e8ffe8;
+      color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AriaNg Download Manager - Settings</h1>
+
+    <div id="status" class="status"></div>
+
+    <div class="section">
+      <h2 aria-label="RPC Connection Settings">RPC Connection Settings</h2>
+
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="rpcProtocol">Protocol</label>
+            <select id="rpcProtocol">
+              <option value="http">HTTP</option>
+              <option value="https">HTTPS</option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="rpcPort">Port</label>
+            <input type="number" id="rpcPort" placeholder="6800">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="rpcHost">Host</label>
+        <input type="text" id="rpcHost" placeholder="localhost">
+      </div>
+
+      <div class="form-group">
+        <label for="rpcSecret">Secret Token (Optional)</label>
+        <input type="password" id="rpcSecret" placeholder="Your aria2 RPC secret">
+      </div>
+
+      <div class="form-group">
+        <label>Connection Status: <span id="connectionStatus" class="connection-status">Disconnected</span></label>
+        <button type="button" id="testConnection" class="btn" style="margin-top: 10px; width: auto;">Test Connection</button>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 aria-label="Download Capture Settings">Download Capture Settings</h2>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="autoCapture" checked>
+          <label for="autoCapture">Auto Capture Downloads</label>
+        </div>
+        <p class="help-text">Automatically intercept downloads and send them to aria2</p>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="showNotifications" checked>
+          <label for="showNotifications">Show Notifications</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="minFileSize">Min File Size (bytes)</label>
+        <input type="number" id="minFileSize" placeholder="0" value="0">
+        <p class="help-text">Only capture files larger than this size (0 = no limit)</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 aria-label="Filters">Filters</h2>
+
+      <div class="form-group">
+        <label for="excludedProtocols">Excluded Protocols (one per line)</label>
+        <div class="textarea-group">
+          <textarea id="excludedProtocols" placeholder="data:&#10;blob:&#10;file:">data:
+blob:
+file:</textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="excludedSites">Excluded Sites (one per line)</label>
+        <div class="textarea-group">
+          <textarea id="excludedSites" placeholder="example.com&#10;another.com"></textarea>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="excludedFileTypes">Excluded File Types (one per line, without dot)</label>
+        <div class="textarea-group">
+          <textarea id="excludedFileTypes" placeholder="html&#10;css&#10;js"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" id="saveSettings" class="btn">Save Settings</button>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

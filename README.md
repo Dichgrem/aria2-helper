@@ -2,11 +2,17 @@
 
 A browser extension that automatically intercepts downloads and sends them to your aria2 server.
 
+## Privacy Policy
+
+This extension does not collect, store, or transmit any personal data.
+
+All operations are performed locally in the browser or between the user's browser and their own aria2 RPC server. No analytics, tracking, or third-party data sharing is involved.
+
 ## Features
 
 - **Auto Capture Downloads**: Automatically intercept browser downloads and send them to aria2
 - **AriaNg UI**: Integrated AriaNg for full download management
-- **No Manual Confirmation**: Downloads are captured automatically (configurable)
+- **No Manual Confirmathttps://github.com/baptistecdr/aria2-extensionsion**: Downloads are captured automatically (configurable)
 - **Protocol Support**: HTTP, HTTPS, WebSocket for aria2 RPC
 - **Torrent Support**: Automatically handles .torrent and .metalink files
 - **Cookie & Referer Support**: Preserves cookies and referer for authenticated downloads
@@ -26,9 +32,7 @@ A browser extension that automatically intercepts downloads and sends them to yo
 - Browser with Manifest V3 support (Firefox 109+, Chrome 88+, Edge 88+)
 - aria2 RPC server running (with JSON-RPC support)
 
-## Installation
-
-### Build from Source
+## Build from Source
 
 ```bash
 # Install dependencies

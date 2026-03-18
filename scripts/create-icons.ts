@@ -1,5 +1,3 @@
-// Simple script to create placeholder icons
-
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -12,7 +10,6 @@ const sizes = [16, 48, 128];
 sizes.forEach(size => {
   const iconPath = path.join(__dirname, '../public/icons', `icon-${size}.svg`);
   
-  // Create a simple SVG icon
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}">
     <defs>
       <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">

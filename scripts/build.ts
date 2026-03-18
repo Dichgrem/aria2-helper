@@ -1,11 +1,9 @@
-#!/usr/bin/env node
-
-// scripts/build.js - Build script for aria2-ng-extension
+#!/usr/bin/env bun
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import archiver from 'archiver';
+import * as esbuild from 'esbuild';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +11,7 @@ const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.join(__dirname, '..');
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 
-const BUILD_CONFIG = {
+const BUILD_CONFIG: Record<string, { name: string; manifest: string }> = {
   firefox: {
     name: 'aria2-ng-extension-firefox',
     manifest: 'manifest.json'
@@ -24,7 +22,7 @@ const BUILD_CONFIG = {
   }
 };
 
-function copyFile(src, dest) {
+function copyFile(src: string, dest: string): void {
   const destDir = path.dirname(dest);
   if (!fs.existsSync(destDir)) {
     fs.mkdirSync(destDir, { recursive: true });
@@ -32,7 +30,7 @@ function copyFile(src, dest) {
   fs.copyFileSync(src, dest);
 }
 
-function copyDirectory(src, dest, ignores = ['.DS_Store', 'Thumbs.db']) {
+function copyDirectory(src: string, dest: string, ignores: string[] = ['.DS_Store', 'Thumbs.db']): void {
   if (!fs.existsSync(src)) {
     return;
   }
@@ -51,15 +49,54 @@ function copyDirectory(src, dest, ignores = ['.DS_Store', 'Thumbs.db']) {
 
     if (stat.isDirectory()) {
       copyDirectory(srcPath, destPath, ignores);
-    } else if (!ignores.includes(file)) {
-      copyFile(srcPath, destPath);
+    } else {
+      const shouldIgnore = ignores.some(ign => file.endsWith(ign));
+      if (!shouldIgnore) {
+        copyFile(srcPath, destPath);
+      }
     }
   });
 }
 
-function createZip(sourceDir, outputFile) {
+async function compileTypeScript(): Promise<void> {
+  const tsFiles = [
+    { src: 'src/background/background.ts', out: 'dist/background.js', target: 'esnext' },
+    { src: 'src/content/content.ts', out: 'dist/content.js', target: 'esnext' },
+    { src: 'public/options.ts', out: 'dist/options.js', target: 'esnext' },
+    { src: 'public/popup.ts', out: 'dist/popup.js', target: 'esnext' }
+  ];
+
+  await Promise.all(
+    tsFiles.map(async ({ src, out, target }) => {
+      const srcPath = path.join(ROOT_DIR, src);
+      const outPath = path.join(ROOT_DIR, out);
+
+      if (!fs.existsSync(path.dirname(outPath))) {
+        fs.mkdirSync(path.dirname(outPath), { recursive: true });
+      }
+
+      await esbuild.build({
+        entryPoints: [srcPath],
+        bundle: true,
+        outfile: outPath,
+        platform: 'browser',
+        target: target,
+        format: 'iife',
+        minify: false,
+        sourcemap: false
+      });
+
+      console.log(`Compiled: ${src} -> ${out}`);
+    })
+  );
+}
+
+async function createZip(sourceDir: string, outputFile: string): Promise<void> {
+  const { createWriteStream } = await import('fs');
+  const archiver = (await import('archiver')).default;
+
   return new Promise((resolve, reject) => {
-    const output = fs.createWriteStream(outputFile);
+    const output = createWriteStream(outputFile);
     const archive = archiver('zip', {
       zlib: { level: 9 }
     });
@@ -69,7 +106,7 @@ function createZip(sourceDir, outputFile) {
       resolve();
     });
 
-    archive.on('error', (err) => {
+    archive.on('error', (err: Error) => {
       reject(err);
     });
 
@@ -79,43 +116,55 @@ function createZip(sourceDir, outputFile) {
   });
 }
 
-async function build(browser) {
+async function build(browser: string): Promise<void> {
   console.log(`Building for ${browser}...`);
 
   const config = BUILD_CONFIG[browser];
+  if (!config) {
+    throw new Error(`Unknown browser: ${browser}`);
+  }
+
   const buildDir = path.join(DIST_DIR, config.name);
 
-  // Clear build directory
   if (fs.existsSync(buildDir)) {
     fs.rmSync(buildDir, { recursive: true });
   }
   fs.mkdirSync(buildDir, { recursive: true });
 
-  // Copy manifest
+  console.log('Compiling TypeScript...');
+  await compileTypeScript();
+
   copyFile(
     path.join(ROOT_DIR, 'manifest.json'),
     path.join(buildDir, 'manifest.json')
   );
 
-  // Copy background script
-  copyDirectory(
-    path.join(ROOT_DIR, 'src', 'background'),
-    path.join(buildDir)
+  copyFile(
+    path.join(ROOT_DIR, 'dist', 'background.js'),
+    path.join(buildDir, 'background.js')
   );
 
-  // Copy content script
-  copyDirectory(
-    path.join(ROOT_DIR, 'src', 'content'),
-    path.join(buildDir)
+  copyFile(
+    path.join(ROOT_DIR, 'dist', 'content.js'),
+    path.join(buildDir, 'content.js')
   );
 
-  // Copy public files
   copyDirectory(
     path.join(ROOT_DIR, 'public'),
-    path.join(buildDir)
+    path.join(buildDir),
+    ['.ts']
   );
 
-  // Replace chrome with browser for Firefox
+  copyFile(
+    path.join(ROOT_DIR, 'dist', 'options.js'),
+    path.join(buildDir, 'options.js')
+  );
+
+  copyFile(
+    path.join(ROOT_DIR, 'dist', 'popup.js'),
+    path.join(buildDir, 'popup.js')
+  );
+
   if (browser === 'firefox') {
     const jsFiles = [
       'background.js',
@@ -134,16 +183,23 @@ async function build(browser) {
     });
   }
 
-  // Create zip file
   const zipFile = path.join(DIST_DIR, `${config.name}.zip`);
   await createZip(buildDir, zipFile);
 
   console.log(`Build completed for ${browser}!`);
   console.log(`Extension files: ${buildDir}`);
   console.log(`Zip file: ${zipFile}`);
+
+  const jsFiles = ['background.js', 'content.js', 'options.js', 'popup.js'];
+  jsFiles.forEach(file => {
+    const jsPath = path.join(ROOT_DIR, 'dist', file);
+    if (fs.existsSync(jsPath)) {
+      fs.unlinkSync(jsPath);
+    }
+  });
 }
 
-async function main() {
+async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const browser = args[0];
 

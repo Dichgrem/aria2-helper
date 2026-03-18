@@ -24,8 +24,14 @@
     "adm-zip": "^0.5.16"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.8",
+    "@types/archiver": "^7.0.0",
+    "@types/chrome": "^0.1.38",
+    "@types/node": "^25.5.0",
     "archiver": "^7.0.1",
     "biome": "^0.3.3",
-    "chokidar": "^4.0.1"
+    "chokidar": "^4.0.1",
+    "esbuild": "^0.27.4",
+    "typescript": "^5.9.3"
   }
 }

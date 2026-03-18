@@ -1,11 +1,25 @@
-// background.js - Service Worker for Manifest V3
+interface Settings {
+  rpcHost: string;
+  rpcPort: number;
+  rpcProtocol: string;
+  rpcSecret: string;
+  autoCapture: boolean;
+  excludedProtocols: string[];
+  excludedSites: string[];
+  excludedFileTypes: string[];
+  minFileSize: number;
+  showNotifications: boolean;
+}
 
-let aria2 = null;
-let settings = null;
-let isCapturing = false;
-let rpcUrl = null;
+interface DownloadItem {
+  id: number;
+  url: string;
+  filename?: string;
+  totalBytes?: number;
+  referer?: string;
+}
 
-const DEFAULT_SETTINGS = {
+const DEFAULT_SETTINGS: Settings = {
   rpcHost: 'localhost',
   rpcPort: 6800,
   rpcProtocol: 'http',
@@ -20,28 +34,32 @@ const DEFAULT_SETTINGS = {
 
 const ARIA2_ID = 'aria2-ng-extension-' + Date.now();
 
-async function loadSettings() {
+let settings: Settings = { ...DEFAULT_SETTINGS };
+let isCapturing = false;
+let rpcUrl: string | null = null;
+
+async function loadSettings(): Promise<void> {
   const stored = await chrome.storage.local.get('settings');
-  settings = { ...DEFAULT_SETTINGS, ...stored.settings };
+  settings = stored.settings ? { ...DEFAULT_SETTINGS, ...stored.settings } : DEFAULT_SETTINGS;
   isCapturing = settings.autoCapture;
   connectToAria2();
   updateContextMenu();
 }
 
-async function saveSettings(newSettings) {
+async function saveSettings(newSettings: Partial<Settings>): Promise<void> {
   settings = { ...settings, ...newSettings };
   await chrome.storage.local.set({ settings });
   connectToAria2();
   updateContextMenu();
 }
 
-function connectToAria2() {
+function connectToAria2(): void {
   const protocol = settings.rpcProtocol === 'https' ? 'https' : 'http';
   rpcUrl = `${protocol}://${settings.rpcHost}:${settings.rpcPort}/jsonrpc`;
   console.log('Aria2 RPC URL:', rpcUrl);
 }
 
-function sendAria2Request(method, params = []) {
+function sendAria2Request(method: string, params: unknown[] = []): Promise<unknown> {
   return new Promise((resolve, reject) => {
     if (!rpcUrl) {
       reject(new Error('Not connected to aria2'));
@@ -86,7 +104,7 @@ function sendAria2Request(method, params = []) {
   });
 }
 
-function shouldCaptureDownload(downloadItem) {
+function shouldCaptureDownload(downloadItem: DownloadItem): boolean {
   if (!settings.autoCapture || !isCapturing) {
     return false;
   }
@@ -104,13 +122,13 @@ function shouldCaptureDownload(downloadItem) {
 
     const filename = downloadItem.filename || '';
     if (settings.excludedFileTypes.length > 0) {
-      const fileExtension = url.pathname.split('.').pop().toLowerCase();
-      if (settings.excludedFileTypes.includes(fileExtension)) {
+      const fileExtension = url.pathname.split('.').pop()?.toLowerCase();
+      if (fileExtension && settings.excludedFileTypes.includes(fileExtension)) {
         return false;
       }
     }
 
-    if (settings.minFileSize > 0 && downloadItem.totalBytes > 0) {
+    if (settings.minFileSize > 0 && downloadItem.totalBytes && downloadItem.totalBytes > 0) {
       if (downloadItem.totalBytes < settings.minFileSize) {
         return false;
       }
@@ -123,11 +141,11 @@ function shouldCaptureDownload(downloadItem) {
   }
 }
 
-async function getCookies(url, tabId) {
+async function getCookies(url: string, tabId?: number): Promise<string> {
   try {
     if (tabId) {
       const cookies = await chrome.cookies.getAll({ url });
-      return cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+      return cookies.map((cookie: chrome.cookies.Cookie) => `${cookie.name}=${cookie.value}`).join('; ');
     }
   } catch (error) {
     console.error('Error getting cookies:', error);
@@ -135,15 +153,13 @@ async function getCookies(url, tabId) {
   return '';
 }
 
-async function addDownloadToAria2(downloadItem, referer, cookies) {
+async function addDownloadToAria2(downloadItem: DownloadItem, referer: string, cookies: string): Promise<void> {
   try {
-    // Already cancelled in onCreated, just erase the download record
     await chrome.downloads.erase({ id: downloadItem.id });
 
-    let params = [];
+    let params: unknown[] = [];
 
     if (downloadItem.url.match(/\.(torrent|metalink4?)$/i)) {
-      // Handle torrent/metalink files
       const response = await fetch(downloadItem.url);
       const blob = await response.blob();
       const base64 = await blobToBase64(blob);
@@ -154,16 +170,15 @@ async function addDownloadToAria2(downloadItem, referer, cookies) {
         await sendAria2Request('aria2.addMetalink', [base64, [], {}]);
       }
     } else {
-      // Regular URL download
       params = [[downloadItem.url]];
 
-      const options = {};
+      const options: Record<string, unknown> = {};
       if (referer) {
         options.header = [`Referer: ${referer}`];
       }
       if (cookies) {
         options.header = options.header || [];
-        options.header.push(`Cookie: ${cookies}`);
+        (options.header as string[]).push(`Cookie: ${cookies}`);
       }
 
       if (downloadItem.filename) {
@@ -186,11 +201,11 @@ async function addDownloadToAria2(downloadItem, referer, cookies) {
   }
 }
 
-function blobToBase64(blob) {
+function blobToBase64(blob: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onloadend = () => {
-      const dataUrl = reader.result;
+      const dataUrl = reader.result as string;
       const base64 = dataUrl.split(',')[1];
       resolve(base64);
     };
@@ -199,7 +214,7 @@ function blobToBase64(blob) {
   });
 }
 
-function showNotification(message) {
+function showNotification(message: string): void {
   chrome.notifications.create({
     type: 'basic',
     iconUrl: 'icons/icon-48.png',
@@ -208,7 +223,7 @@ function showNotification(message) {
   });
 }
 
-function updateContextMenu() {
+function updateContextMenu(): void {
   chrome.contextMenus.removeAll().then(() => {
     chrome.contextMenus.create({
       title: chrome.i18n.getMessage('extName'),
@@ -232,13 +247,12 @@ function updateContextMenu() {
   });
 }
 
-chrome.downloads.onCreated.addListener(async (downloadItem) => {
+chrome.downloads.onCreated.addListener(async (downloadItem: DownloadItem) => {
   if (!shouldCaptureDownload(downloadItem)) {
     return;
   }
 
   try {
-    // Cancel immediately
     await chrome.downloads.cancel(downloadItem.id);
   } catch (e) {
     // Ignore cancel errors
@@ -248,8 +262,8 @@ chrome.downloads.onCreated.addListener(async (downloadItem) => {
     const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
     const tab = tabs[0];
 
-    const referer = downloadItem.referrer || (tab ? tab.url : '');
-    const cookies = await getCookies(downloadItem.url, tab ? tab.id : null);
+    const referer = downloadItem.referer || (tab?.url || '');
+    const cookies = await getCookies(downloadItem.url, tab?.id);
 
     await addDownloadToAria2(downloadItem, referer, cookies);
   } catch (error) {
@@ -257,12 +271,12 @@ chrome.downloads.onCreated.addListener(async (downloadItem) => {
   }
 });
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+chrome.contextMenus.onClicked.addListener(async (info: chrome.contextMenus.OnClickData, tab?: chrome.tabs.Tab) => {
   if (info.menuItemId === 'ariang-download' || info.menuItemId === 'ariang-main') {
     const url = info.linkUrl;
     if (url) {
-      const referer = tab ? tab.url : '';
-      const cookies = await getCookies(url, tab ? tab.id : null);
+      const referer = tab?.url || '';
+      const cookies = await getCookies(url, tab?.id);
 
       await addDownloadToAria2({
         url: url,
@@ -279,7 +293,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-chrome.commands.onCommand.addListener((command) => {
+chrome.commands.onCommand.addListener((command: string) => {
   if (command === 'toggle_capture_downloads') {
     isCapturing = !isCapturing;
     const message = isCapturing
@@ -294,16 +308,16 @@ chrome.runtime.onInstalled.addListener(() => {
   updateContextMenu();
 });
 
-chrome.storage.onChanged.addListener((changes, area) => {
+chrome.storage.onChanged.addListener((changes: Record<string, chrome.storage.StorageChange>, area: string) => {
   if (area === 'local' && changes.settings) {
-    loadSettings();
+loadSettings();
   }
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message: { type: string; settings?: Partial<Settings> }, _sender: chrome.runtime.MessageSender, sendResponse: (response?: unknown) => void) => {
   if (message.type === 'getSettings') {
     sendResponse(settings);
-  } else if (message.type === 'setSettings') {
+  } else if (message.type === 'setSettings' && message.settings) {
     saveSettings(message.settings).then(() => sendResponse({ success: true }));
     return true;
   }

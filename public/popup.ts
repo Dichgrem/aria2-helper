@@ -1,12 +1,26 @@
-// popup.js - Popup logic
+interface Settings {
+  rpcHost: string;
+  rpcPort: number;
+  rpcProtocol: string;
+  rpcSecret: string;
+  autoCapture: boolean;
+}
+
+const getEl = <T extends HTMLElement>(id: string): T => document.getElementById(id) as T;
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const captureStatus = document.getElementById('captureStatus');
-  const openAriangBtn = document.getElementById('openAriang');
-  const openSettingsBtn = document.getElementById('openSettings');
+  const captureStatus = getEl<HTMLDivElement>('captureStatus');
+  const openAriangBtn = getEl<HTMLButtonElement>('openAriang');
+  const openSettingsBtn = getEl<HTMLButtonElement>('openSettings');
 
-  const stored = await chrome.storage.local.get('settings');
-  const settings = stored.settings || {};
+  const stored = await chrome.storage.local.get('settings') as { settings?: Settings };
+  const settings: Settings = stored.settings ?? {
+    rpcHost: 'localhost',
+    rpcPort: 6800,
+    rpcProtocol: 'http',
+    rpcSecret: '',
+    autoCapture: true
+  };
 
   if (settings.autoCapture) {
     captureStatus.textContent = 'Auto Capture: Enabled';
@@ -31,3 +45,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.close();
   });
 });
+
+export {};

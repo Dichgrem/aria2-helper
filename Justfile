@@ -1,37 +1,37 @@
 set shell := ["bash", "-c"]
 
-default:
+@default:
 	@just --list
 
-install:
+@install:
 	bun install
 
-dev:
+@dev:
 	bun run dev
 
-dev-firefox:
+@dev-firefox:
   bun run dev:firefox
 
-build:
+@build:
 	bun run build
 
-build-firefox:
+@build-firefox:
   bun run build:firefox
 
-zip:
+@zip:
 	bun run zip
 
-zip-firefox:
+@zip-firefox:
   bun run zip:firefox
 
-download-ariang:
+@download-ariang:
 	bun run download:ariang
 
-lint:
+@lint:
 	biome check entrypoints/ wxt.config.ts
 
-lint-fix:
+@lint-fix:
 	biome check --write --unsafe entrypoints/ wxt.config.ts
 
-fmt:
+@fmt:
 	biome format --write entrypoints/

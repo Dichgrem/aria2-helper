@@ -16,7 +16,7 @@ export default defineConfig({
 		host_permissions: ["<all_urls>"],
 		browser_specific_settings: {
 			gecko: {
-				id: "aria2-helper@github.com",
+				id: "aria2-helper-addon@github.com",
 				strict_min_version: "140.0",
 				data_collection_permissions: {
 					required: ["none"],

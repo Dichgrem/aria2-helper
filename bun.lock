@@ -4,12 +4,10 @@
   "workspaces": {
     "": {
       "name": "aria2-ng-extension",
-      "dependencies": {
-        "adm-zip": "^0.5.17",
-      },
       "devDependencies": {
         "@biomejs/biome": "^2.4.11",
         "@types/adm-zip": "^0.5.8",
+        "adm-zip": "^0.5.17",
         "typescript": "^5.9.3",
         "wxt": "^0.20.20",
       },

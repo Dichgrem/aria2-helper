@@ -1,3 +1,8 @@
+<p align="right">
+  <a href="README.md">English</a> |
+  <a href="README.zh-CN.md">简体中文</a>
+</p>
+
 # Aria2-helper
 
 A browser extension that automatically intercepts downloads and sends them to your aria2 server.
@@ -10,40 +15,62 @@ All operations are performed locally in the browser or between the user's browse
 
 ## Features
 
-- **Auto Capture Downloads**: Automatically intercept browser downloads and send them to aria2
-- **AriaNg UI**: Integrated AriaNg for full download management
-- **No Manual Confirmathttps://github.com/baptistecdr/aria2-extensionsion**: Downloads are captured automatically (configurable)
-- **Protocol Support**: HTTP, HTTPS, WebSocket for aria2 RPC
-- **Torrent Support**: Automatically handles .torrent and .metalink files
-- **Cookie & Referer Support**: Preserves cookies and referer for authenticated downloads
-- **Filters**: Exclude specific protocols, sites, and file types from capture
-- **Multi-language**: Support for English and Chinese
-- **Manifest V3**: Modern browser extension standard
+- **Auto Intercept**: Automatically intercept browser downloads and send them to aria2
+- **Toggle On/Off**: Popup switch to temporarily disable interception — let the browser handle downloads when you need to
+- **AriaNg Built-in**: Integrated AriaNg web UI for full download management
+- **Protocol Support**: HTTP, HTTPS for aria2 RPC
+- **Torrent & Metalink**: Automatically handles `.torrent` and `.metalink` files
+- **Cookie & Referer**: Preserves cookies and referer headers for authenticated downloads
+- **Context Menu**: Right-click any link to download with Aria2
+- **Connection Test**: Verify your aria2 RPC settings directly from the options page
+- **Multi-language**: English and Chinese
+- **Dark Theme**: Modern dark UI for both popup and settings pages
 
 ## Browser Support
 
-- Firefox (Manifest V3) - **Recommended**
-- Chrome/Chromium (Manifest V3)
-- Edge (Chrome-based)
-- Opera (Chrome-based)
+| Browser | Min Version | Notes |
+|---------|-------------|-------|
+| Firefox | 140.0+ | Primary target |
+| Chrome | 88+ | MV3 only |
+| Edge | 88+ | Chrome-based |
 
 ## Requirements
 
-- Browser with Manifest V3 support (Firefox 109+, Chrome 88+, Edge 88+)
-- aria2 RPC server running (with JSON-RPC support)
+- aria2 running with `--enable-rpc --rpc-listen-all` flags
+- Ensure aria2 RPC port (default 6800) is accessible from your browser
 
 ## Build from Source
 
 ```bash
 # Install dependencies
-bun install
+just install
 
-# Download AriaNg
-bun run download:ariang
+# Download AriaNg web interface
+just download-ariang
 
-# Build for Firefox (recommended)
-bun run build:firefox
+# Build for Firefox
+just build-firefox
 
-# Development mode (with watch)
-bun run dev:firefox
+# Development mode (HMR)
+just dev-firefox
+
+# Package as zip for distribution
+just zip-firefox
+```
+
+## Architecture
+
+This extension is built with [WXT](https://wxt.dev/), a next-generation web extension framework based on Vite.
+
+```
+├── entrypoints/
+│   ├── background.ts          # Core logic: download interception, aria2 RPC
+│   ├── content.ts             # Content script (minimal)
+│   ├── popup/                 # Popup UI: toggle, open AriaNg, settings
+│   └── options/               # Settings page: RPC config, connection test
+├── public/
+│   ├── _locales/              # i18n strings (en, zh_CN)
+│   ├── icons/                 # Extension icons
+│   └── ariang/                # AriaNg web interface (bundled)
+└── wxt.config.ts              # WXT configuration
 ```

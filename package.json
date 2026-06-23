@@ -6,6 +6,7 @@
 		"@biomejs/biome": "^2.4.11",
 		"@types/adm-zip": "^0.5.8",
 		"adm-zip": "^0.5.17",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
 		"wxt": "^0.20.20"
 	},
@@ -24,7 +25,7 @@
 		"build:firefox": "wxt build -b firefox",
 		"zip": "wxt zip",
 		"zip:firefox": "wxt zip -b firefox",
-		"download:ariang": "bun scripts/download-ariang.js",
+		"download:ariang": "tsx scripts/download-ariang.ts",
 		"postinstall": "wxt prepare"
 	},
 	"type": "module"

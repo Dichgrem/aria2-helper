@@ -1,11 +1,13 @@
-#!/usr/bin/env bun
+#!/usr/bin/env -S npx tsx
 
 import https from 'https';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const ROOT_DIR = path.join(import.meta.dir, '..');
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT_DIR = path.join(__dirname, '..');
 const ARIANG_DIR = path.join(ROOT_DIR, 'public', 'ariang');
 
 const ARIANG_DOWNLOAD_URL = 'https://github.com/mayswind/AriaNg/releases/download/1.3.13/AriaNg-1.3.13.zip';

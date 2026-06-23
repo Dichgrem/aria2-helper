@@ -4,28 +4,28 @@ set shell := ["bash", "-c"]
 	@just --list
 
 @install:
-	bun install
+	pnpm install
 
 @dev:
-	bun run dev
+	pnpm run dev
 
 @dev-firefox:
-  bun run dev:firefox
+  pnpm run dev:firefox
 
 @build:
-	bun run build
+	pnpm run build
 
 @build-firefox:
-  bun run build:firefox
+  pnpm run build:firefox
 
 @zip:
-	bun run zip
+	pnpm run zip
 
 @zip-firefox:
-  bun run zip:firefox
+  pnpm run zip:firefox
 
 @download-ariang:
-	bun run download:ariang
+	pnpm run download:ariang
 
 @lint:
 	biome check entrypoints/ wxt.config.ts
@@ -33,5 +33,5 @@ set shell := ["bash", "-c"]
 @lint-fix:
 	biome check --write --unsafe entrypoints/ wxt.config.ts
 
-@fmt:
+@format:
 	biome format --write entrypoints/

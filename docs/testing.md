@@ -1,8 +1,37 @@
 # Testing
 
-There are currently no automated tests for this project.
+## Unit Tests
 
-Browser extension testing is inherently complex — it requires a browser runtime with WebExtensions APIs (`browser.downloads`, `browser.webRequest`, `browser.cookies`, etc.). Standard Node.js test runners can't provide these APIs.
+Vitest with jsdom for DOM-dependent modules.
+
+```bash
+just test        # run once
+just test-watch  # watch mode
+```
+
+### What's covered
+
+| Module | Tests | Type |
+|--------|-------|------|
+| `lib/settings.ts` | `DEFAULT_SETTINGS` defaults, type conformance | pure |
+| `lib/ariang-url.ts` | URL construction, HTTPS, secret, fallbacks | pure |
+| `lib/aria2-rpc.ts` | `buildRpcUrl` with HTTP/HTTPS/port/string/IP | pure |
+| `lib/dom.ts` | `getEl`, `localizePage` with jsdom | DOM |
+
+### Adding new tests
+
+Place test files under `test/` mirroring the source structure:
+
+```
+test/
+  lib/
+    settings.test.ts
+    ariang-url.test.ts
+    aria2-rpc.test.ts
+    dom.test.ts
+```
+
+Tests run in jsdom environment by default (configured in `vitest.config.ts`).
 
 ## Manual Testing Checklist
 

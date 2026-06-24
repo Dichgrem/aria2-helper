@@ -6,8 +6,10 @@
 		"@biomejs/biome": "^2.4.11",
 		"@types/adm-zip": "^0.5.8",
 		"adm-zip": "^0.5.17",
+		"jsdom": "^29.1.1",
 		"tsx": "^4.21.0",
 		"typescript": "^5.9.3",
+		"vitest": "^4.1.9",
 		"wxt": "^0.20.20"
 	},
 	"description": "Browser extension that automatically intercepts downloads to aria2",
@@ -26,6 +28,8 @@
 		"zip": "wxt zip",
 		"zip:firefox": "wxt zip -b firefox",
 		"download:ariang": "tsx scripts/download-ariang.ts",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"postinstall": "wxt prepare"
 	},
 	"type": "module"

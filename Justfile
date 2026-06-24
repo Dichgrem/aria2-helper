@@ -6,6 +6,24 @@ set shell := ["bash", "-c"]
 @install:
 	pnpm install
 
+@download-ariang:
+	pnpm run download:ariang
+
+@format:
+	biome format --write entrypoints/ lib/ scripts/
+
+@lint:
+	biome check entrypoints/ lib/ scripts/ wxt.config.ts
+
+@lint-fix:
+	biome check --write --unsafe entrypoints/ lib/ scripts/ wxt.config.ts
+
+@test:
+	pnpm run test
+
+@test-watch:
+	pnpm run test:watch
+
 @dev:
 	pnpm run dev
 
@@ -23,15 +41,3 @@ set shell := ["bash", "-c"]
 
 @zip-firefox:
   pnpm run zip:firefox
-
-@download-ariang:
-	pnpm run download:ariang
-
-@lint:
-	biome check entrypoints/ lib/ scripts/ wxt.config.ts
-
-@lint-fix:
-	biome check --write --unsafe entrypoints/ lib/ scripts/ wxt.config.ts
-
-@format:
-	biome format --write entrypoints/ lib/ scripts/

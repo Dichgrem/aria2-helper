@@ -1,7 +1,7 @@
 // WXT auto-imports: browser
 
 import { buildRpcUrl, rpcCall } from "../../lib/aria2-rpc";
-import { getEl } from "../../lib/dom";
+import { getEl, localizePage } from "../../lib/dom";
 import { DEFAULT_SETTINGS, type Settings } from "../../lib/settings";
 
 async function loadSettings(): Promise<void> {
@@ -79,6 +79,7 @@ function showStatus(message: string, type: string): void {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+	localizePage();
 	getEl<HTMLButtonElement>("saveSettings").addEventListener(
 		"click",
 		saveSettings,

@@ -1,10 +1,11 @@
 // WXT auto-imports: browser
 
 import { buildAriaNgUrl } from "../../lib/ariang-url";
-import { getEl } from "../../lib/dom";
+import { getEl, localizePage } from "../../lib/dom";
 import { DEFAULT_SETTINGS, type Settings } from "../../lib/settings";
 
 document.addEventListener("DOMContentLoaded", async () => {
+	localizePage();
 	const toggleBtn = getEl<HTMLButtonElement>("toggleEnabled");
 	const openAriangBtn = getEl<HTMLButtonElement>("openAriang");
 	const openSettingsBtn = getEl<HTMLButtonElement>("openSettings");

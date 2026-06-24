@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>__MSG_settingsTitle__</title>
+  <title data-i18n-title>Aria2-helper Settings</title>
   <script type="module" src="./main.ts"></script>
   <style>
     * {
@@ -173,28 +173,28 @@
 </head>
 <body>
   <div class="container">
-    <h1>__MSG_settingsTitle__</h1>
+    <h1 data-i18n="settingsTitle">Aria2-helper Settings</h1>
 
     <div id="status" class="status"></div>
 
     <div class="section">
-      <h2>__MSG_general__</h2>
+      <h2 data-i18n="general">General</h2>
 
       <div class="form-group">
         <div class="checkbox-group">
           <input type="checkbox" id="enabled" checked>
-          <label for="enabled">__MSG_interceptDownloads__</label>
+          <label for="enabled" data-i18n="interceptDownloads">Intercept Downloads</label>
         </div>
       </div>
     </div>
 
     <div class="section">
-      <h2>__MSG_rpcSettings__</h2>
+      <h2 data-i18n="rpcSettings">RPC Connection Settings</h2>
 
       <div class="row">
         <div class="col">
           <div class="form-group">
-            <label for="rpcProtocol">__MSG_rpcProtocol__</label>
+            <label for="rpcProtocol" data-i18n="rpcProtocol">Protocol</label>
             <select id="rpcProtocol">
               <option value="http">HTTP</option>
               <option value="https">HTTPS</option>
@@ -203,40 +203,40 @@
         </div>
         <div class="col">
           <div class="form-group">
-            <label for="rpcPort">__MSG_rpcPort__</label>
+            <label for="rpcPort" data-i18n="rpcPort">Port</label>
             <input type="number" id="rpcPort" placeholder="6800">
           </div>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="rpcHost">__MSG_rpcHost__</label>
+        <label for="rpcHost" data-i18n="rpcHost">Host</label>
         <input type="text" id="rpcHost" placeholder="localhost">
       </div>
 
       <div class="form-group">
-        <label for="rpcSecret">__MSG_rpcSecret__</label>
+        <label for="rpcSecret" data-i18n="rpcSecret">Secret Token</label>
         <input type="password" id="rpcSecret" placeholder="Your aria2 RPC secret">
       </div>
 
       <div class="form-group">
-        <label>__MSG_connectionStatus__: <span id="connectionStatus" class="connection-status">__MSG_disconnected__</span></label>
-        <button type="button" id="testConnection" class="btn" style="margin-top: 10px; width: auto;">__MSG_testConnection__</button>
+        <label><span data-i18n="connectionStatus">Connection Status</span>: <span id="connectionStatus" class="connection-status" data-i18n="disconnected">Disconnected</span></label>
+        <button type="button" id="testConnection" class="btn" style="margin-top: 10px; width: auto;" data-i18n="testConnection">Test Connection</button>
       </div>
     </div>
 
     <div class="section">
-      <h2>__MSG_notificationsSection__</h2>
+      <h2 data-i18n="notificationsSection">Notifications</h2>
 
       <div class="form-group">
         <div class="checkbox-group">
           <input type="checkbox" id="showNotifications" checked>
-          <label for="showNotifications">__MSG_showNotifications__</label>
+          <label for="showNotifications" data-i18n="showNotifications">Show Notifications</label>
         </div>
       </div>
     </div>
 
-    <button type="button" id="saveSettings" class="btn">__MSG_saveSettings__</button>
+    <button type="button" id="saveSettings" class="btn" data-i18n="saveSettings">Save Settings</button>
   </div>
 </body>
 </html>

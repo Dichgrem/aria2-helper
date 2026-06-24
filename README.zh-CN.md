@@ -60,7 +60,6 @@ just zip-firefox
 ```
 ├── entrypoints/
 │   ├── background.ts          # 核心逻辑：下载拦截、aria2 RPC 通信
-│   ├── content.ts             # Content Script（最小化）
 │   ├── popup/                 # Popup 界面：开关、打开 AriaNg、设置
 │   └── options/               # 设置页：RPC 配置、连接测试
 ├── public/

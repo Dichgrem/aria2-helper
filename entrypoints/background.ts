@@ -105,16 +105,12 @@ function sendAria2Request(
 	});
 }
 
-async function getCookies(url: string, tabId?: number): Promise<string> {
+async function getCookies(url: string): Promise<string> {
 	try {
-		if (tabId) {
-			const cookies = await browser.cookies.getAll({ url });
-			return cookies
-				.map(
-					(cookie: browser.cookies.Cookie) => `${cookie.name}=${cookie.value}`,
-				)
-				.join("; ");
-		}
+		const cookies = await browser.cookies.getAll({ url });
+		return cookies
+			.map((cookie: browser.cookies.Cookie) => `${cookie.name}=${cookie.value}`)
+			.join("; ");
 	} catch (error) {
 		console.error("Error getting cookies:", error);
 	}
@@ -260,7 +256,7 @@ function setupEventListeners(): void {
 				try {
 					const referer =
 						tabId >= 0 ? (await browser.tabs.get(tabId)).url || "" : "";
-					const cookies = await getCookies(url, tabId);
+					const cookies = await getCookies(url);
 					await addDownloadUrlToAria2(url, referer, cookies, filename);
 				} catch (error) {
 					console.error("Error handling webRequest download:", error);
@@ -296,7 +292,7 @@ function setupEventListeners(): void {
 				const tab = tabs[0];
 
 				const referer = downloadItem.referrer || tab?.url || "";
-				const cookies = await getCookies(downloadItem.url, tab?.id);
+				const cookies = await getCookies(downloadItem.url);
 
 				await addDownloadToAria2(
 					{
@@ -324,7 +320,7 @@ function setupEventListeners(): void {
 				const url = info.linkUrl;
 				if (url) {
 					const referer = tab?.url || "";
-					const cookies = await getCookies(url, tab?.id);
+					const cookies = await getCookies(url);
 
 					await addDownloadToAria2(
 						{

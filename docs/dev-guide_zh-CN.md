@@ -49,7 +49,6 @@ WXT 会打开一个干净的浏览器配置文件并加载扩展。修改 `entry
 | 入口点 | 类型 | 用途 |
 |---|---|---|
 | `background.ts` | Service Worker | 核心逻辑、下载拦截、RPC 客户端 |
-| `content.ts` | Content Script | 注入所有页面（最小化） |
 | `popup/main.ts` | Popup | 工具栏弹出窗口 |
 | `options/main.ts` | Options Page | 设置表单 |
 

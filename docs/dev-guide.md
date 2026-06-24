@@ -49,7 +49,6 @@ The extension has 4 entrypoints (WXT auto-bundles each):
 | Entrypoint | Type | Purpose |
 |---|---|---|
 | `background.ts` | Service Worker | Core logic, download interception, RPC client |
-| `content.ts` | Content Script | Injected into all pages (minimal) |
 | `popup/main.ts` | Popup | Toolbar popup UI |
 | `options/main.ts` | Options Page | Settings form |
 

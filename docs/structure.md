@@ -4,7 +4,6 @@
 aria2-helper/
 ├── entrypoints/
 │   ├── background.ts     # Core: download interception, aria2 JSON-RPC, context menu
-│   ├── content.ts        # Minimal content script (cookies helper, runs on all URLs)
 │   ├── popup/
 │   │   ├── index.html    # Popup UI markup
 │   │   └── main.ts       # Popup logic: enable/disable toggle, open AriaNg, open settings
@@ -54,10 +53,6 @@ The extension's core. Runs as a persistent service worker / background page.
 3. Fetches cookies + referer for the URL
 4. Sends `aria2.addUri` (or `.addTorrent`/`.addMetalink`) to the configured RPC endpoint
 5. Shows notification
-
-### content.ts
-
-A minimal content script injected into all pages (`<all_urls>` at `document_start`). Currently a stub that responds to `getCookies` messages — the actual cookie fetching is done in the background script via `browser.cookies`.
 
 ### popup/
 

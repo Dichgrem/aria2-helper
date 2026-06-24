@@ -1,3 +1,5 @@
+const SESSION_PREFIX = Math.random().toString(36).slice(2, 11);
+
 export function rpcCall(
 	rpcUrl: string,
 	secret: string,
@@ -6,7 +8,7 @@ export function rpcCall(
 	timeout = 30000,
 ): Promise<unknown> {
 	return new Promise((resolve, reject) => {
-		const id = `aria2-helper-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
+		const id = `aria2-helper-${SESSION_PREFIX}-${Math.random().toString(36).slice(2, 11)}`;
 		const rpcParams = secret ? [`token:${secret}`, ...params] : params;
 		const body = JSON.stringify({
 			jsonrpc: "2.0",

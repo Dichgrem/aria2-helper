@@ -40,7 +40,6 @@ async function saveSettings(newSettings: Partial<Settings>): Promise<void> {
 function connectToAria2(): void {
 	const protocol = settings.rpcProtocol === "https" ? "https" : "http";
 	rpcUrl = `${protocol}://${settings.rpcHost}:${settings.rpcPort}/jsonrpc`;
-	console.log("Aria2 RPC URL:", rpcUrl);
 }
 
 function sendAria2Request(

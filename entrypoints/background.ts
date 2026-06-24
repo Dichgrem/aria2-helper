@@ -78,7 +78,7 @@ async function addDownloadToAria2(
 		downloadItem.url,
 		referer,
 		cookies,
-		downloadItem.filename?.split("/").pop(),
+		downloadItem.filename?.split(/[\\/]/).pop(),
 	);
 }
 

@@ -44,7 +44,7 @@ WXT opens a clean browser profile with the extension loaded. Changes to `entrypo
 
 ## Architecture Overview
 
-The extension has 4 entrypoints (WXT auto-bundles each):
+The extension has 3 entrypoints (WXT auto-bundles each):
 
 | Entrypoint | Type | Purpose |
 |---|---|---|

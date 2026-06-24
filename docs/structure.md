@@ -10,6 +10,11 @@ aria2-helper/
 │   └── options/
 │       ├── index.html    # Settings page markup
 │       └── main.ts       # Settings logic: RPC config form, connection test
+├── lib/
+│   ├── settings.ts        # Shared Settings type and defaults
+│   ├── aria2-rpc.ts       # JSON-RPC client (rpcCall, buildRpcUrl)
+│   ├── ariang-url.ts      # AriaNg panel URL builder
+│   └── dom.ts             # DOM helper (getEl)
 ├── public/
 │   ├── _locales/
 │   │   ├── en/messages.json    # English i18n strings
@@ -61,7 +66,7 @@ The toolbar popup (click the extension icon). Three buttons:
 - **Open AriaNg** — opens the bundled AriaNg UI in a new tab, pre-configured with RPC settings
 - **Settings** — opens the options page
 
-Reads/writes settings via `browser.storage.local`.
+Reads current settings from `browser.storage.local` on open. Settings are saved via `runtime.sendMessage` to the background script.
 
 ### options/
 
@@ -78,6 +83,19 @@ A full-page settings form (opens in a new tab via `options_ui.open_in_tab`).
 | Intercept Downloads | checkbox | `true` |
 
 **Connection Test** — sends `aria2.getVersion` to verify the RPC config works.
+
+Saves settings via `runtime.sendMessage` to background (which handles RPC reconnection logic).
+
+## lib/
+
+Shared TypeScript modules imported by entrypoints. These are **not** entrypoints — WXT ignores anything outside `entrypoints/`.
+
+| Module | Purpose |
+|--------|---------|
+| `settings.ts` | `Settings` interface and `DEFAULT_SETTINGS` constant |
+| `aria2-rpc.ts` | `rpcCall()` — JSON-RPC over XHR; `buildRpcUrl()` — URL construction |
+| `ariang-url.ts` | `buildAriaNgUrl(settings)` — AriaNg deep-link URL |
+| `dom.ts` | `getEl<T>(id)` — typed `document.getElementById` |
 
 ## public/_locales/
 

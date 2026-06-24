@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [3.1.0] - 2026-06-24
+
+### Added
+- Full i18n coverage: all UI strings in popup, options, and context menu are now localizable (English + Chinese)
+- Shared `lib/` modules: `lib/settings.ts`, `lib/aria2-rpc.ts`, `lib/ariang-url.ts`, `lib/dom.ts`
+
+### Changed
+- Popup and options pages now save settings via background message API instead of direct storage writes
+- RPC reconnection only triggers when host/port/protocol actually change (not on every settings save)
+- Request ID prefix is session-stable instead of regenerating with `Date.now()` per request
+- Torrent/metalink fetch now has 30-second timeout via `AbortController`
+
+### Fixed
+- `getCookies()` previously skipped cookie fetching for the first browser tab (tabId=0 falsy check)
+- Removed dead content script (`content.ts`) — cookie fetching is done in background via `browser.cookies`
+- Context menu parent item `ariang-main` was redundantly matched in click handler (never fires in WebExtensions)
+- Context menu download path called `browser.downloads.erase({ id: 0 })` with a dummy id — now calls `addDownloadUrlToAria2` directly
+- `blobToBase64` added null/empty Blob guard
+- `download-ariang.ts` redirect handling now covers 307/308 in addition to 301/302
+
+### Removed
+- `content.ts` — dead code (background uses `browser.cookies` permission directly)
+- Debug `console.log` in `connectToAria2()`
+- Redundant `aria-label` attributes on i18n'd HTML elements
+
 ## [3.0.0] - 2026-05-14
 
 ### Added

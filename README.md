@@ -67,6 +67,7 @@ This extension is built with [WXT](https://wxt.dev/), a next-generation web exte
 │   ├── background.ts          # Core logic: download interception, aria2 RPC
 │   ├── popup/                 # Popup UI: toggle, open AriaNg, settings
 │   └── options/               # Settings page: RPC config, connection test
+├── lib/                       # Shared modules (Settings, RPC, URL builders, DOM)
 ├── public/
 │   ├── _locales/              # i18n strings (en, zh_CN)
 │   ├── icons/                 # Extension icons

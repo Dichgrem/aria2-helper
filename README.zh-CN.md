@@ -62,6 +62,7 @@ just zip-firefox
 │   ├── background.ts          # 核心逻辑：下载拦截、aria2 RPC 通信
 │   ├── popup/                 # Popup 界面：开关、打开 AriaNg、设置
 │   └── options/               # 设置页：RPC 配置、连接测试
+├── lib/                       # 共享模块（设置、RPC、URL 构建、DOM 工具）
 ├── public/
 │   ├── _locales/              # 国际化文件（en、zh_CN）
 │   ├── icons/                 # 扩展图标

@@ -1,5 +1,14 @@
 const SESSION_PREFIX = Math.random().toString(36).slice(2, 11);
 
+export function buildRpcUrl(
+	host: string,
+	port: number | string,
+	protocol: string,
+): string {
+	const scheme = protocol === "https" ? "https" : "http";
+	return `${scheme}://${host}:${port}/jsonrpc`;
+}
+
 export function rpcCall(
 	rpcUrl: string,
 	secret: string,

@@ -1,6 +1,7 @@
 // WXT auto-imports: browser
 
-import { rpcCall } from "../lib/aria2-rpc";
+import { buildRpcUrl, rpcCall } from "../lib/aria2-rpc";
+import { buildAriaNgUrl } from "../lib/ariang-url";
 import { DEFAULT_SETTINGS, type Settings } from "../lib/settings";
 
 interface DownloadItem {
@@ -38,8 +39,11 @@ async function saveSettings(newSettings: Partial<Settings>): Promise<void> {
 }
 
 function connectToAria2(): void {
-	const protocol = settings.rpcProtocol === "https" ? "https" : "http";
-	rpcUrl = `${protocol}://${settings.rpcHost}:${settings.rpcPort}/jsonrpc`;
+	rpcUrl = buildRpcUrl(
+		settings.rpcHost,
+		settings.rpcPort,
+		settings.rpcProtocol,
+	);
 }
 
 function sendAria2Request(
@@ -86,7 +90,10 @@ async function addDownloadUrlToAria2(
 ): Promise<void> {
 	try {
 		if (url.match(/\.(torrent|metalink4?)$/i)) {
-			const response = await fetch(url);
+			const controller = new AbortController();
+			const timer = setTimeout(() => controller.abort(), 30000);
+			const response = await fetch(url, { signal: controller.signal });
+			clearTimeout(timer);
 			const blob = await response.blob();
 			const base64 = await blobToBase64(blob);
 
@@ -98,13 +105,13 @@ async function addDownloadUrlToAria2(
 		} else {
 			const params: unknown[] = [[url]];
 
-			const options: Record<string, unknown> = {};
+			const options: { header?: string[]; out?: string } = {};
 			if (referer) {
 				options.header = [`Referer: ${referer}`];
 			}
 			if (cookies) {
 				options.header = options.header || [];
-				(options.header as string[]).push(`Cookie: ${cookies}`);
+				options.header.push(`Cookie: ${cookies}`);
 			}
 			if (filename) {
 				options.out = filename;
@@ -127,9 +134,17 @@ async function addDownloadUrlToAria2(
 
 function blobToBase64(blob: Blob): Promise<string> {
 	return new Promise((resolve, reject) => {
+		if (blob.size === 0) {
+			reject(new Error("Empty file"));
+			return;
+		}
 		const reader = new FileReader();
 		reader.onloadend = () => {
-			const dataUrl = reader.result as string;
+			const dataUrl = reader.result;
+			if (!dataUrl || typeof dataUrl !== "string") {
+				reject(new Error("Failed to read file"));
+				return;
+			}
 			const base64 = dataUrl.split(",")[1];
 			resolve(base64);
 		};
@@ -260,32 +275,15 @@ function setupEventListeners(): void {
 
 	browser.contextMenus.onClicked.addListener(
 		async (info: browser.contextMenus.OnClickData, tab?: browser.tabs.Tab) => {
-			if (
-				info.menuItemId === "ariang-download" ||
-				info.menuItemId === "ariang-main"
-			) {
+			if (info.menuItemId === "ariang-download") {
 				const url = info.linkUrl;
 				if (url) {
 					const referer = tab?.url || "";
 					const cookies = await getCookies(url);
-
-					await addDownloadToAria2(
-						{
-							url: url,
-							id: 0,
-						},
-						referer,
-						cookies,
-					);
+					await addDownloadUrlToAria2(url, referer, cookies);
 				}
 			} else if (info.menuItemId === "ariang-open") {
-				const protocol = settings.rpcProtocol === "https" ? "https" : "http";
-				let ariangUrl = browser.runtime.getURL(
-					`/ariang/index.html#!/settings/rpc/set/${protocol}/${settings.rpcHost}/${settings.rpcPort}/jsonrpc`,
-				);
-				if (settings.rpcSecret) {
-					ariangUrl += `/${btoa(settings.rpcSecret)}`;
-				}
+				const ariangUrl = browser.runtime.getURL(buildAriaNgUrl(settings));
 				browser.tabs.create({ url: ariangUrl });
 			}
 		},

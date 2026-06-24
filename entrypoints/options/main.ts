@@ -1,10 +1,8 @@
 // WXT auto-imports: browser
 
-import { rpcCall } from "../../lib/aria2-rpc";
+import { buildRpcUrl, rpcCall } from "../../lib/aria2-rpc";
+import { getEl } from "../../lib/dom";
 import { DEFAULT_SETTINGS, type Settings } from "../../lib/settings";
-
-const getEl = <T extends HTMLElement>(id: string): T =>
-	document.getElementById(id) as T;
 
 async function loadSettings(): Promise<void> {
 	const stored = await browser.storage.local.get("settings");
@@ -34,7 +32,7 @@ async function saveSettings(): Promise<void> {
 	};
 
 	try {
-		await browser.storage.local.set({ settings });
+		await browser.runtime.sendMessage({ type: "setSettings", settings });
 		showStatus(browser.i18n.getMessage("settingsSaved"), "success");
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Unknown error";
@@ -57,7 +55,7 @@ async function testConnection(): Promise<void> {
 	connectionStatus.className = "connection-status";
 
 	try {
-		const rpcUrl = `${rpcProtocol === "https" ? "https" : "http"}://${rpcHost}:${rpcPort}/jsonrpc`;
+		const rpcUrl = buildRpcUrl(rpcHost, rpcPort, rpcProtocol);
 		await rpcCall(rpcUrl, rpcSecret, "aria2.getVersion", [], 10000);
 
 		connectionStatus.textContent = browser.i18n.getMessage("connected");

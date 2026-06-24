@@ -28,10 +28,10 @@ set shell := ["bash", "-c"]
 	pnpm run download:ariang
 
 @lint:
-	biome check entrypoints/ wxt.config.ts
+	biome check entrypoints/ lib/ scripts/ wxt.config.ts
 
 @lint-fix:
-	biome check --write --unsafe entrypoints/ wxt.config.ts
+	biome check --write --unsafe entrypoints/ lib/ scripts/ wxt.config.ts
 
 @format:
-	biome format --write entrypoints/
+	biome format --write entrypoints/ lib/ scripts/

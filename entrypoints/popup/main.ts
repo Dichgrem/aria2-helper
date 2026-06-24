@@ -1,9 +1,8 @@
 // WXT auto-imports: browser
 
+import { buildAriaNgUrl } from "../../lib/ariang-url";
+import { getEl } from "../../lib/dom";
 import { DEFAULT_SETTINGS, type Settings } from "../../lib/settings";
-
-const getEl = <T extends HTMLElement>(id: string): T =>
-	document.getElementById(id) as T;
 
 document.addEventListener("DOMContentLoaded", async () => {
 	const toggleBtn = getEl<HTMLButtonElement>("toggleEnabled");
@@ -28,13 +27,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	});
 
 	openAriangBtn.addEventListener("click", () => {
-		const protocol = settings.rpcProtocol === "https" ? "https" : "http";
-		let ariangUrl = browser.runtime.getURL(
-			`/ariang/index.html#!/settings/rpc/set/${protocol}/${settings.rpcHost || "localhost"}/${settings.rpcPort || 6800}/jsonrpc`,
-		);
-		if (settings.rpcSecret) {
-			ariangUrl += `/${btoa(settings.rpcSecret)}`;
-		}
+		const ariangUrl = browser.runtime.getURL(buildAriaNgUrl(settings));
 		browser.tabs.create({ url: ariangUrl });
 		window.close();
 	});

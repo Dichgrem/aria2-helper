@@ -1,6 +1,6 @@
 {
 	"name": "aria2-helper",
-	"version": "3.1.0",
+	"version": "3.2.0",
 	"author": "",
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.11",

@@ -1,12 +1,6 @@
 // WXT auto-imports: browser
 
-interface Settings {
-	enabled: boolean;
-	rpcHost: string;
-	rpcPort: number;
-	rpcProtocol: string;
-	rpcSecret: string;
-}
+import { DEFAULT_SETTINGS, type Settings } from "../../lib/settings";
 
 const getEl = <T extends HTMLElement>(id: string): T =>
 	document.getElementById(id) as T;
@@ -19,20 +13,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 	const stored = (await browser.storage.local.get("settings")) as {
 		settings?: Settings;
 	};
-	const settings: Settings = stored.settings ?? {
-		enabled: true,
-		rpcHost: "localhost",
-		rpcPort: 6800,
-		rpcProtocol: "http",
-		rpcSecret: "",
-	};
+	const settings: Settings = stored.settings ?? DEFAULT_SETTINGS;
 
 	updateToggleUI(settings.enabled);
 
 	toggleBtn.addEventListener("click", async () => {
 		const newEnabled = !settings.enabled;
+		await browser.runtime.sendMessage({
+			type: "setSettings",
+			settings: { enabled: newEnabled },
+		});
 		settings.enabled = newEnabled;
-		await browser.storage.local.set({ settings });
 		updateToggleUI(newEnabled);
 	});
 

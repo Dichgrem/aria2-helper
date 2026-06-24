@@ -1,13 +1,7 @@
 // WXT auto-imports: browser
 
-interface Settings {
-	enabled: boolean;
-	rpcHost: string;
-	rpcPort: number;
-	rpcProtocol: string;
-	rpcSecret: string;
-	showNotifications: boolean;
-}
+import { rpcCall } from "../lib/aria2-rpc";
+import { DEFAULT_SETTINGS, type Settings } from "../lib/settings";
 
 interface DownloadItem {
 	id: number;
@@ -16,17 +10,6 @@ interface DownloadItem {
 	totalBytes?: number;
 	referer?: string;
 }
-
-const DEFAULT_SETTINGS: Settings = {
-	enabled: true,
-	rpcHost: "localhost",
-	rpcPort: 6800,
-	rpcProtocol: "http",
-	rpcSecret: "",
-	showNotifications: true,
-};
-
-const ARIA2_ID = `aria2-ng-extension-${Date.now()}`;
 
 const SKIP_URLS = new Set<string>();
 
@@ -39,14 +22,19 @@ async function loadSettings(): Promise<void> {
 		? { ...DEFAULT_SETTINGS, ...stored.settings }
 		: DEFAULT_SETTINGS;
 	connectToAria2();
-	updateContextMenu();
 }
 
 async function saveSettings(newSettings: Partial<Settings>): Promise<void> {
+	const rpcChanged =
+		("rpcHost" in newSettings && newSettings.rpcHost !== settings.rpcHost) ||
+		("rpcPort" in newSettings && newSettings.rpcPort !== settings.rpcPort) ||
+		("rpcProtocol" in newSettings &&
+			newSettings.rpcProtocol !== settings.rpcProtocol);
 	settings = { ...settings, ...newSettings };
 	await browser.storage.local.set({ settings });
-	connectToAria2();
-	updateContextMenu();
+	if (rpcChanged) {
+		connectToAria2();
+	}
 }
 
 function connectToAria2(): void {
@@ -59,50 +47,10 @@ function sendAria2Request(
 	method: string,
 	params: unknown[] = [],
 ): Promise<unknown> {
-	return new Promise((resolve, reject) => {
-		if (!rpcUrl) {
-			reject(new Error("Not connected to aria2"));
-			return;
-		}
-
-		const id = `${ARIA2_ID}-${Math.random().toString(36).substr(2, 9)}`;
-		const rpcParams = settings.rpcSecret
-			? [`token:${settings.rpcSecret}`, ...params]
-			: params;
-		const body = JSON.stringify({
-			jsonrpc: "2.0",
-			id: id,
-			method: method,
-			params: rpcParams,
-		});
-
-		const xhr = new XMLHttpRequest();
-		xhr.open("POST", rpcUrl, true);
-		xhr.setRequestHeader("Content-Type", "application/json");
-		xhr.timeout = 30000;
-
-		xhr.onload = () => {
-			if (xhr.status >= 200 && xhr.status < 300) {
-				try {
-					const data = JSON.parse(xhr.responseText);
-					if (data.error) {
-						reject(new Error(data.error.message));
-					} else {
-						resolve(data.result);
-					}
-				} catch (_e) {
-					reject(new Error("Invalid response"));
-				}
-			} else {
-				reject(new Error(`HTTP ${xhr.status}`));
-			}
-		};
-
-		xhr.onerror = () => reject(new Error("Connection failed"));
-		xhr.ontimeout = () => reject(new Error("Request timeout"));
-
-		xhr.send(body);
-	});
+	if (!rpcUrl) {
+		return Promise.reject(new Error("Not connected to aria2"));
+	}
+	return rpcCall(rpcUrl, settings.rpcSecret, method, params);
 }
 
 async function getCookies(url: string): Promise<string> {
@@ -345,7 +293,6 @@ function setupEventListeners(): void {
 	);
 
 	browser.runtime.onInstalled.addListener(() => {
-		loadSettings();
 		updateContextMenu();
 	});
 

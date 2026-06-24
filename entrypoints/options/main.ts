@@ -1,22 +1,7 @@
 // WXT auto-imports: browser
 
-interface Settings {
-	enabled: boolean;
-	rpcHost: string;
-	rpcPort: number;
-	rpcProtocol: string;
-	rpcSecret: string;
-	showNotifications: boolean;
-}
-
-const defaultSettings: Settings = {
-	enabled: true,
-	rpcHost: "localhost",
-	rpcPort: 6800,
-	rpcProtocol: "http",
-	rpcSecret: "",
-	showNotifications: true,
-};
+import { rpcCall } from "../../lib/aria2-rpc";
+import { DEFAULT_SETTINGS, type Settings } from "../../lib/settings";
 
 const getEl = <T extends HTMLElement>(id: string): T =>
 	document.getElementById(id) as T;
@@ -24,8 +9,8 @@ const getEl = <T extends HTMLElement>(id: string): T =>
 async function loadSettings(): Promise<void> {
 	const stored = await browser.storage.local.get("settings");
 	const settings: Settings = stored.settings
-		? { ...defaultSettings, ...stored.settings }
-		: defaultSettings;
+		? { ...DEFAULT_SETTINGS, ...stored.settings }
+		: DEFAULT_SETTINGS;
 
 	getEl<HTMLInputElement>("rpcHost").value = settings.rpcHost;
 	getEl<HTMLInputElement>("rpcPort").value = settings.rpcPort.toString();
@@ -69,46 +54,8 @@ async function testConnection(): Promise<void> {
 	connectionStatus.className = "connection-status";
 
 	try {
-		const httpProtocol = rpcProtocol === "https" ? "https" : "http";
-		const rpcUrl = `${httpProtocol}://${rpcHost}:${rpcPort}/jsonrpc`;
-
-		const rpcParams = rpcSecret ? [`token:${rpcSecret}`] : [];
-
-		await new Promise<void>((resolve, reject) => {
-			const xhr = new XMLHttpRequest();
-			xhr.open("POST", rpcUrl, true);
-			xhr.setRequestHeader("Content-Type", "application/json");
-			xhr.timeout = 10000;
-
-			xhr.onload = () => {
-				if (xhr.status >= 200 && xhr.status < 300) {
-					try {
-						const data = JSON.parse(xhr.responseText);
-						if (data.error) {
-							reject(new Error(data.error.message));
-						} else {
-							resolve();
-						}
-					} catch (_e) {
-						reject(new Error("Invalid response"));
-					}
-				} else {
-					reject(new Error(`HTTP ${xhr.status}`));
-				}
-			};
-
-			xhr.onerror = () => reject(new Error("Connection failed"));
-			xhr.ontimeout = () => reject(new Error("Connection timeout"));
-
-			xhr.send(
-				JSON.stringify({
-					jsonrpc: "2.0",
-					id: `test-${Date.now()}`,
-					method: "aria2.getVersion",
-					params: rpcParams,
-				}),
-			);
-		});
+		const rpcUrl = `${rpcProtocol === "https" ? "https" : "http"}://${rpcHost}:${rpcPort}/jsonrpc`;
+		await rpcCall(rpcUrl, rpcSecret, "aria2.getVersion", [], 10000);
 
 		connectionStatus.textContent = "Connected";
 		connectionStatus.className = "connection-status connected";

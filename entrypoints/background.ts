@@ -157,14 +157,14 @@ function updateContextMenu(): void {
 		});
 
 		browser.contextMenus.create({
-			title: "Download with Aria2",
+			title: browser.i18n.getMessage("downloadWithAria2"),
 			parentId: "ariang-main",
 			id: "ariang-download",
 			contexts: ["link"],
 		});
 
 		browser.contextMenus.create({
-			title: "Open Aria2",
+			title: browser.i18n.getMessage("openAria2"),
 			parentId: "ariang-main",
 			id: "ariang-open",
 			contexts: ["link", "selection"],

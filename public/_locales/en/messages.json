@@ -15,32 +15,104 @@
 		"message": "Failed to add download to Aria2",
 		"description": "Download error notification"
 	},
+	"toggleOn": {
+		"message": "Intercepting: ON",
+		"description": "Popup toggle button — active state"
+	},
+	"toggleOff": {
+		"message": "Intercepting: OFF",
+		"description": "Popup toggle button — inactive state"
+	},
+	"openPanel": {
+		"message": "Open Panel",
+		"description": "Popup button to open AriaNg panel"
+	},
+	"settingsBtn": {
+		"message": "Settings",
+		"description": "Popup button to open settings"
+	},
+	"hintText": {
+		"message": "Right-click any link to download with Aria2",
+		"description": "Popup hint text"
+	},
 	"settingsTitle": {
 		"message": "Aria2-helper Settings",
 		"description": "Settings page title"
 	},
+	"general": {
+		"message": "General",
+		"description": "Options section header"
+	},
+	"interceptDownloads": {
+		"message": "Intercept Downloads (Disable to let browser handle downloads normally)",
+		"description": "Options checkbox label"
+	},
+	"rpcSettings": {
+		"message": "RPC Connection Settings",
+		"description": "Options section header"
+	},
 	"rpcHost": {
 		"message": "RPC Host",
-		"description": "RPC host setting"
+		"description": "RPC host setting label"
 	},
 	"rpcPort": {
 		"message": "RPC Port",
-		"description": "RPC port setting"
+		"description": "RPC port setting label"
 	},
 	"rpcProtocol": {
 		"message": "RPC Protocol",
-		"description": "RPC protocol setting"
+		"description": "RPC protocol setting label"
 	},
 	"rpcSecret": {
 		"message": "RPC Secret Token",
-		"description": "RPC secret token setting"
+		"description": "RPC secret token setting label"
+	},
+	"connectionStatus": {
+		"message": "Connection Status",
+		"description": "Connection status label"
+	},
+	"testConnection": {
+		"message": "Test Connection",
+		"description": "Test connection button"
+	},
+	"connected": {
+		"message": "Connected",
+		"description": "Connection status — success"
+	},
+	"disconnected": {
+		"message": "Disconnected",
+		"description": "Connection status — initial"
+	},
+	"connecting": {
+		"message": "Connecting...",
+		"description": "Connection status — in progress"
+	},
+	"notificationsSection": {
+		"message": "Notifications",
+		"description": "Options section header"
+	},
+	"showNotifications": {
+		"message": "Show Notifications",
+		"description": "Show notifications checkbox label"
 	},
 	"saveSettings": {
 		"message": "Save Settings",
 		"description": "Save settings button"
 	},
-	"showNotifications": {
-		"message": "Show Notifications",
-		"description": "Show notifications setting"
+	"settingsSaved": {
+		"message": "Settings saved successfully!",
+		"description": "Save success toast"
+	},
+	"settingsSaveFailed": {
+		"message": "Failed to save settings",
+		"description": "Save error toast prefix"
+	},
+	"downloadWithAria2": {
+		"message": "Download with Aria2",
+		"description": "Context menu item"
+	},
+	"openAria2": {
+		"message": "Open Aria2",
+		"description": "Context menu item"
 	}
 }

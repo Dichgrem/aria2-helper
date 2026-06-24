@@ -15,32 +15,104 @@
 		"message": "添加下载到 Aria2 失败",
 		"description": "Download error notification"
 	},
+	"toggleOn": {
+		"message": "拦截中：开",
+		"description": "Popup toggle button — active state"
+	},
+	"toggleOff": {
+		"message": "拦截中：关",
+		"description": "Popup toggle button — inactive state"
+	},
+	"openPanel": {
+		"message": "打开面板",
+		"description": "Popup button to open AriaNg panel"
+	},
+	"settingsBtn": {
+		"message": "设置",
+		"description": "Popup button to open settings"
+	},
+	"hintText": {
+		"message": "右键任意链接以使用 Aria2 下载",
+		"description": "Popup hint text"
+	},
 	"settingsTitle": {
 		"message": "Aria2-helper 设置",
 		"description": "Settings page title"
 	},
+	"general": {
+		"message": "通用",
+		"description": "Options section header"
+	},
+	"interceptDownloads": {
+		"message": "拦截下载（禁用后由浏览器处理下载）",
+		"description": "Options checkbox label"
+	},
+	"rpcSettings": {
+		"message": "RPC 连接设置",
+		"description": "Options section header"
+	},
 	"rpcHost": {
 		"message": "RPC 主机",
-		"description": "RPC host setting"
+		"description": "RPC host setting label"
 	},
 	"rpcPort": {
 		"message": "RPC 端口",
-		"description": "RPC port setting"
+		"description": "RPC port setting label"
 	},
 	"rpcProtocol": {
 		"message": "RPC 协议",
-		"description": "RPC protocol setting"
+		"description": "RPC protocol setting label"
 	},
 	"rpcSecret": {
 		"message": "RPC 密钥",
-		"description": "RPC secret token setting"
+		"description": "RPC secret token setting label"
+	},
+	"connectionStatus": {
+		"message": "连接状态",
+		"description": "Connection status label"
+	},
+	"testConnection": {
+		"message": "测试连接",
+		"description": "Test connection button"
+	},
+	"connected": {
+		"message": "已连接",
+		"description": "Connection status — success"
+	},
+	"disconnected": {
+		"message": "未连接",
+		"description": "Connection status — initial"
+	},
+	"connecting": {
+		"message": "连接中...",
+		"description": "Connection status — in progress"
+	},
+	"notificationsSection": {
+		"message": "通知",
+		"description": "Options section header"
+	},
+	"showNotifications": {
+		"message": "显示通知",
+		"description": "Show notifications checkbox label"
 	},
 	"saveSettings": {
 		"message": "保存设置",
 		"description": "Save settings button"
 	},
-	"showNotifications": {
-		"message": "显示通知",
-		"description": "Show notifications setting"
+	"settingsSaved": {
+		"message": "设置保存成功！",
+		"description": "Save success toast"
+	},
+	"settingsSaveFailed": {
+		"message": "设置保存失败",
+		"description": "Save error toast prefix"
+	},
+	"downloadWithAria2": {
+		"message": "用 Aria2 下载",
+		"description": "Context menu item"
+	},
+	"openAria2": {
+		"message": "打开 Aria2",
+		"description": "Context menu item"
 	}
 }

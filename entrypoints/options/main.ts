@@ -35,10 +35,13 @@ async function saveSettings(): Promise<void> {
 
 	try {
 		await browser.storage.local.set({ settings });
-		showStatus("Settings saved successfully!", "success");
+		showStatus(browser.i18n.getMessage("settingsSaved"), "success");
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Unknown error";
-		showStatus(`Failed to save settings: ${message}`, "error");
+		showStatus(
+			`${browser.i18n.getMessage("settingsSaveFailed")}: ${message}`,
+			"error",
+		);
 	}
 }
 
@@ -50,14 +53,14 @@ async function testConnection(): Promise<void> {
 	const rpcSecret = getEl<HTMLInputElement>("rpcSecret").value;
 
 	const connectionStatus = getEl<HTMLDivElement>("connectionStatus");
-	connectionStatus.textContent = "Connecting...";
+	connectionStatus.textContent = browser.i18n.getMessage("connecting");
 	connectionStatus.className = "connection-status";
 
 	try {
 		const rpcUrl = `${rpcProtocol === "https" ? "https" : "http"}://${rpcHost}:${rpcPort}/jsonrpc`;
 		await rpcCall(rpcUrl, rpcSecret, "aria2.getVersion", [], 10000);
 
-		connectionStatus.textContent = "Connected";
+		connectionStatus.textContent = browser.i18n.getMessage("connected");
 		connectionStatus.className = "connection-status connected";
 	} catch (error) {
 		const message = error instanceof Error ? error.message : "Unknown error";

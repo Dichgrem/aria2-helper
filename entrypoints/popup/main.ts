@@ -45,7 +45,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 	});
 
 	function updateToggleUI(enabled: boolean): void {
-		toggleBtn.textContent = enabled ? "Intercepting: ON" : "Intercepting: OFF";
+		toggleBtn.textContent = enabled
+			? browser.i18n.getMessage("toggleOn")
+			: browser.i18n.getMessage("toggleOff");
 		toggleBtn.className = enabled ? "btn btn-active" : "btn btn-inactive";
 	}
 });
